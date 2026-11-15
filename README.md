@@ -15,19 +15,35 @@ Keep one Grimoire API key in GitHub instead of copying every secret into every r
 ## Usage
 
 ```yml
-- name: Load secrets from Grimoire
-  uses: guibranco/github-grimoire-action@v1.0.0
-  with:
-    url: https://api.grimoire.example.com
-    api-key: ${{ secrets.GRIMOIRE_API_KEY }}
-    environment: production
-    secrets: |
-      database-password
-      smtp-password=MAIL_PASSWORD
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production   # GitHub environment: picks the secrets and variables below
 
-- name: Deploy
-  run: ./deploy.sh   # DATABASE_PASSWORD, MAIL_PASSWORD and every configuration entry are in the environment
+    steps:
+      - name: Load secrets from Grimoire
+        uses: guibranco/github-grimoire-action@v1.0.0
+        with:
+          url: ${{ secrets.GRIMOIRE_URL }}
+          api-key: ${{ secrets.GRIMOIRE_API_KEY }}
+          environment: ${{ vars.GRIMOIRE_ENVIRONMENT }}
+          secrets: |
+            database-password
+            smtp-password=MAIL_PASSWORD
+
+      - name: Deploy
+        run: ./deploy.sh   # DATABASE_PASSWORD, MAIL_PASSWORD and every configuration entry are in the environment
 ```
+
+Set these in **Settings → Environments** for each GitHub environment (`staging`, `production`, …), so the same workflow reads the right Grimoire environment wherever it runs:
+
+| Name | Kind | Example |
+| --- | --- | --- |
+| `GRIMOIRE_URL` | Secret | `https://api.grimoire.example.com` |
+| `GRIMOIRE_API_KEY` | Secret | `grm_...` |
+| `GRIMOIRE_ENVIRONMENT` | Variable | `production` |
+
+The URL can also be a repository or organization secret when every environment uses the same Grimoire server.
 
 Values are the **effective** ones for the application that owns the API key: its own value, or a global value when the application inherits globals.
 
@@ -85,9 +101,9 @@ The action refuses names that would overwrite `PATH`, `HOME`, `CI`, `NODE_OPTION
 ```yml
 - uses: guibranco/github-grimoire-action@v1.0.0
   with:
-    url: https://api.grimoire.example.com
+    url: ${{ secrets.GRIMOIRE_URL }}
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
-    environment: staging
+    environment: ${{ vars.GRIMOIRE_ENVIRONMENT }}
     configurations: |
       Database:*
       Feature:NewDashboard=NEW_DASHBOARD
@@ -100,9 +116,9 @@ The action refuses names that would overwrite `PATH`, `HOME`, `CI`, `NODE_OPTION
 - id: grimoire
   uses: guibranco/github-grimoire-action@v1.0.0
   with:
-    url: https://api.grimoire.example.com
+    url: ${{ secrets.GRIMOIRE_URL }}
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
-    environment: production
+    environment: ${{ vars.GRIMOIRE_ENVIRONMENT }}
     secrets: ftp-password
     configurations: none
     export-env: false
@@ -121,9 +137,9 @@ For PHP apps and Docker images that read a `.env` file:
 ```yml
 - uses: guibranco/github-grimoire-action@v1.0.0
   with:
-    url: https://api.grimoire.example.com
+    url: ${{ secrets.GRIMOIRE_URL }}
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
-    environment: production
+    environment: ${{ vars.GRIMOIRE_ENVIRONMENT }}
     secrets: database-password
     env-file: deploy/.env
     export-env: false
