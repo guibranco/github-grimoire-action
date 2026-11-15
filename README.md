@@ -16,7 +16,7 @@ Keep one Grimoire API key in GitHub instead of copying every secret into every r
 
 ```yml
 - name: Load secrets from Grimoire
-  uses: guibranco/github-grimoire-action@v1
+  uses: guibranco/github-grimoire-action@v1.0.0
   with:
     url: https://api.grimoire.straccini.com
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
@@ -83,7 +83,7 @@ The action refuses names that would overwrite `PATH`, `HOME`, `CI`, `NODE_OPTION
 ### Only some configuration, with a prefix
 
 ```yml
-- uses: guibranco/github-grimoire-action@v1
+- uses: guibranco/github-grimoire-action@v1.0.0
   with:
     url: https://api.grimoire.straccini.com
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
@@ -98,7 +98,7 @@ The action refuses names that would overwrite `PATH`, `HOME`, `CI`, `NODE_OPTION
 
 ```yml
 - id: grimoire
-  uses: guibranco/github-grimoire-action@v1
+  uses: guibranco/github-grimoire-action@v1.0.0
   with:
     url: https://api.grimoire.straccini.com
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
@@ -119,7 +119,7 @@ The action refuses names that would overwrite `PATH`, `HOME`, `CI`, `NODE_OPTION
 For PHP apps and Docker images that read a `.env` file:
 
 ```yml
-- uses: guibranco/github-grimoire-action@v1
+- uses: guibranco/github-grimoire-action@v1.0.0
   with:
     url: https://api.grimoire.straccini.com
     api-key: ${{ secrets.GRIMOIRE_API_KEY }}
